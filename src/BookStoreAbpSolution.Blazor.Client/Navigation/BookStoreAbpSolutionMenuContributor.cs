@@ -79,6 +79,12 @@ public class BookStoreAbpSolutionMenuContributor : IMenuContributor
                 url: "/books"
             ));
         }
+        context.Menu.AddItem(new ApplicationMenuItem(
+        "BooksStore.Authors",
+        l["Menu:Authors"],
+        url: "/authors"
+    ).RequirePermissions(BookStoreAbpSolutionPermissions.Books.Default));
+
     }
 
     private async Task ConfigureUserMenuAsync(MenuConfigurationContext context)
