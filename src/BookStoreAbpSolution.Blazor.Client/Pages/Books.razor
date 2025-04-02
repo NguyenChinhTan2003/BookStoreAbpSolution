@@ -2,6 +2,7 @@
 @attribute [Authorize(BookStoreAbpSolutionPermissions.Books.Default)]
 @using BookStoreAbpSolution.Permissions
 @using Microsoft.AspNetCore.Authorization
+@using Volo.Abp
 @using Volo.Abp.Application.Dtos
 @using BookStoreAbpSolution.Books
 @using BookStoreAbpSolution.Localization
@@ -56,6 +57,10 @@
                 <DataGridColumn TItem="BookDto"
                                 Field="@nameof(BookDto.Name)"
                                 Caption="@L["Name"]"></DataGridColumn>
+                <DataGridColumn TItem="BookDto"
+                                Field="@nameof(BookDto.AuthorName)"
+                                Caption="@L["Author"]"></DataGridColumn>
+
                 <DataGridColumn TItem="BookDto"
                                 Field="@nameof(BookDto.Type)"
                                 Caption="@L["Type"]">
@@ -125,6 +130,18 @@
                         <FieldLabel>@L["Price"]</FieldLabel>
                         <NumericEdit TValue="float" @bind-Value="NewEntity.Price"/>
                     </Field>
+                    <Field>
+                        <FieldLabel>@L["Author"]</FieldLabel>
+                        <Select TValue="Guid" @bind-SelectedValue="@NewEntity.AuthorId">
+                            @foreach (var author in authorList)
+                            {
+                                <SelectItem TValue="Guid" Value="@author.Id">
+                                    @author.Name
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
                 </Validations>
             </ModalBody>
             <ModalFooter>
@@ -178,6 +195,18 @@
                         <FieldLabel>@L["Price"]</FieldLabel>
                         <NumericEdit TValue="float" @bind-Value="EditingEntity.Price"/>
                     </Field>
+                    <Field>
+                        <FieldLabel>@L["Author"]</FieldLabel>
+                        <Select TValue="Guid" @bind-SelectedValue="@EditingEntity.AuthorId">
+                            @foreach (var author in authorList)
+                            {
+                                <SelectItem TValue="Guid" Value="@author.Id">
+                                    @author.Name
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
                 </Validations>
             </ModalBody>
             <ModalFooter>
@@ -194,6 +223,8 @@
 
 @code
 {
+    IReadOnlyList<AuthorLookupDto> authorList = Array.Empty<AuthorLookupDto>();
+
     public Books() // Constructor
     {
         LocalizationResource = typeof(BookStoreAbpSolutionResource);
@@ -202,4 +233,22 @@
         UpdatePolicyName = BookStoreAbpSolutionPermissions.Books.Edit;
         DeletePolicyName = BookStoreAbpSolutionPermissions.Books.Delete;
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        authorList = (await AppService.GetAuthorLookupAsync()).Items;
+    }
+
+    protected override async Task OpenCreateModalAsync()
+    {
+        if (!authorList.Any())
+        {
+            throw new UserFriendlyException(message: L["AnAuthorIsRequiredForCreatingBook"]);
+        }
+
+        await base.OpenCreateModalAsync();
+        NewEntity.AuthorId = authorList.First().Id;
+    }
+
 }
