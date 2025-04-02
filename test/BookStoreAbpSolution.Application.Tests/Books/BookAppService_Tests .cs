@@ -39,7 +39,7 @@ public abstract class BookAppService_Tests<TStartupModule> : BookStoreAbpSolutio
         var result = await _bookAppService.CreateAsync(
             new CreateUpdateBookDto
             {
-                Name = "New test book 42",
+                Name = "New test book 42",  
                 Price = 10,
                 PublishDate = DateTime.Now,
                 Type = BookType.ScienceFiction
@@ -50,7 +50,7 @@ public abstract class BookAppService_Tests<TStartupModule> : BookStoreAbpSolutio
         result.Id.ShouldNotBe(Guid.Empty);
         result.Name.ShouldBe("New test book 42");
     }
-    
+
     [Fact]
     public async Task Should_Not_Create_A_Book_Without_Name()
     {
@@ -70,4 +70,5 @@ public abstract class BookAppService_Tests<TStartupModule> : BookStoreAbpSolutio
         exception.ValidationErrors
             .ShouldContain(err => err.MemberNames.Any(mem => mem == "Name"));
     }
+
 }
