@@ -15,6 +15,13 @@ public class BookStoreAbpSolutionPermissionDefinitionProvider : PermissionDefini
         booksPermission.AddChild(BookStoreAbpSolutionPermissions.Books.Create, L("Permission:Books.Create"));
         booksPermission.AddChild(BookStoreAbpSolutionPermissions.Books.Edit, L("Permission:Books.Edit"));
         booksPermission.AddChild(BookStoreAbpSolutionPermissions.Books.Delete, L("Permission:Books.Delete"));
+
+        var authorsPermission = bookStoreGroup.AddPermission(BookStoreAbpSolutionPermissions.Authors.Default, L("Permission:Authors"));
+        authorsPermission.AddChild(BookStoreAbpSolutionPermissions.Authors.Create, L("Permission:Authors.Create"));
+        authorsPermission.AddChild(BookStoreAbpSolutionPermissions.Authors.Edit, L("Permission:Authors.Edit"));
+        authorsPermission.AddChild(BookStoreAbpSolutionPermissions.Authors.Delete, L("Permission:Authors.Delete"));
+
+
         //Define your own permissions here. Example:
         //myGroup.AddPermission(BookStoreAbpSolutionPermissions.MyPermission1, L("Permission:MyPermission1"));
     }
