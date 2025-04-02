@@ -1,4 +1,7 @@
 ﻿@page "/books"
+@attribute [Authorize(BookStoreAbpSolutionPermissions.Books.Default)]
+@using BookStoreAbpSolution.Permissions
+@using Microsoft.AspNetCore.Authorization
 @using Volo.Abp.Application.Dtos
 @using BookStoreAbpSolution.Books
 @using BookStoreAbpSolution.Localization
@@ -14,8 +17,14 @@
                 <h2>@L["Books"]</h2>
             </Column>
             <Column ColumnSize="ColumnSize.IsAuto">
-                <Button Color="Color.Primary"
-                        Clicked="OpenCreateModalAsync">@L["NewBook"]</Button>
+                @if (HasCreatePermission)
+                {
+                    <Button Color="Color.Primary"
+                            Clicked="OpenCreateModalAsync">
+                        @L["NewBook"]
+                    </Button>
+                }
+
             </Column>
         </Row>
     </CardHeader>
@@ -33,12 +42,15 @@
                         <EntityActions TItem="BookDto" EntityActionsColumn="@EntityActionsColumn">
                             <EntityAction TItem="BookDto"
                                           Text="@L["Edit"]"
+                                          Visible=HasUpdatePermission
                                           Clicked="() => OpenEditModalAsync(context)" />
                             <EntityAction TItem="BookDto"
                                           Text="@L["Delete"]"
+                                          Visible=HasDeletePermission
                                           Clicked="() => DeleteEntityAsync(context)"
                                           ConfirmationMessage="()=>GetDeleteConfirmationMessage(context)" />
                         </EntityActions>
+
                     </DisplayTemplate>
                 </DataGridEntityActionsColumn>
                 <DataGridColumn TItem="BookDto"
@@ -185,5 +197,9 @@
     public Books() // Constructor
     {
         LocalizationResource = typeof(BookStoreAbpSolutionResource);
+
+        CreatePolicyName = BookStoreAbpSolutionPermissions.Books.Create;
+        UpdatePolicyName = BookStoreAbpSolutionPermissions.Books.Edit;
+        DeletePolicyName = BookStoreAbpSolutionPermissions.Books.Delete;
     }
 }

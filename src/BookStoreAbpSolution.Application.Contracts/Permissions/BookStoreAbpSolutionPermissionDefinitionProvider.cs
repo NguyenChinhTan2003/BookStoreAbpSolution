@@ -9,9 +9,9 @@ public class BookStoreAbpSolutionPermissionDefinitionProvider : PermissionDefini
 {
     public override void Define(IPermissionDefinitionContext context)
     {
-        var myGroup = context.AddGroup(BookStoreAbpSolutionPermissions.GroupName);
+        var bookStoreGroup = context.AddGroup(BookStoreAbpSolutionPermissions.GroupName, L("Permission:BookStore"));
 
-        var booksPermission = myGroup.AddPermission(BookStoreAbpSolutionPermissions.Books.Default, L("Permission:Books"));
+        var booksPermission = bookStoreGroup.AddPermission(BookStoreAbpSolutionPermissions.Books.Default, L("Permission:Books"));
         booksPermission.AddChild(BookStoreAbpSolutionPermissions.Books.Create, L("Permission:Books.Create"));
         booksPermission.AddChild(BookStoreAbpSolutionPermissions.Books.Edit, L("Permission:Books.Edit"));
         booksPermission.AddChild(BookStoreAbpSolutionPermissions.Books.Delete, L("Permission:Books.Delete"));
